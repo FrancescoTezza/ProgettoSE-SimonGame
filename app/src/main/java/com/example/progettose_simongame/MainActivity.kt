@@ -1,12 +1,18 @@
 package com.example.progettose_simongame
 
+import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -70,30 +76,39 @@ fun ColorGrid() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ColorRow("Rosso", "Verde")
-        ColorRow("Blu", "Magenta")
-        ColorRow("Giallo", "Ciano")
+        ColorRow("Rosso", "Verde", Color.Red, Color.Green)
+        ColorRow("Blu", "Magenta", Color.Blue, Color.Magenta)
+        ColorRow("Giallo", "Ciano", Color.Yellow, Color.Cyan)
     }
 }
 
 @Composable
-fun ColorRow(left: String, right: String) {
+fun ColorRow(
+    leftText: String,
+    rightText: String,
+    leftColor: Color,
+    rightColor: Color
+) {
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Button(
-            onClick = {},
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(left)
-        }
 
-        Button(
-            onClick = {},
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(right)
-        }
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(80.dp)
+                .background(leftColor)
+                .clickable { }
+        )
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(80.dp)
+                .background(rightColor)
+                .clickable { }
+        )
     }
 }
 
