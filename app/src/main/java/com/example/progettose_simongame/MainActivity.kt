@@ -25,6 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.*
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.navigation.NavHostController
 import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
 
 class MainActivity : ComponentActivity() {
@@ -33,14 +38,33 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ProgettoSESimonGameTheme {
-                SimonScreen()
+                val navController = rememberNavController()
+
+                val games = remember { mutableStateListOf<String>() }
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "game"
+                ) {
+                    composable("game") {
+                        SimonScreen(navController, games)
+                    }
+
+                    composable("history") {
+                        HistoryScreen(navController, games)
+                    }
+                }
             }
         }
     }
 }
 
+
 @Composable
-fun SimonScreen() {
+fun SimonScreen(
+    navController: NavHostController,
+    games: SnapshotStateList<String>
+) {
 
     var sequence by rememberSaveable{ mutableStateOf("") }
 
@@ -75,7 +99,11 @@ fun SimonScreen() {
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    games.add(sequence)
+                    sequence = ""
+                    navController.navigate("history")
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Fine partita")
@@ -127,10 +155,30 @@ fun ColorRow(
     }
 }
 
+@Composable
+fun HistoryScreen(
+    navController: NavHostController,
+    games: SnapshotStateList<String>
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+
+        Text(
+            text = "Storico Partite",
+            fontSize = 24.sp
+        )
+
+        Text("Nessuna partita salvata")
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun SimonScreenPreview() {
     ProgettoSESimonGameTheme {
-        SimonScreen()
+        Text("Preview temporanea")
     }
 }
