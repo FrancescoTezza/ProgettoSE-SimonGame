@@ -1,6 +1,5 @@
 package com.example.progettose_simongame
 
-import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,7 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,6 +41,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SimonScreen() {
+
+    var sequence by rememberSaveable{ mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,17 +52,23 @@ fun SimonScreen() {
     ) {
 
         Text(
-            text = "Sequenza:",
+            text = "Sequenza : $sequence",
             fontSize = 24.sp
         )
 
-        ColorGrid()
+        ColorGrid(
+            onColorClick = {
+                letter -> sequence =
+                if(sequence.isEmpty()) letter
+                else "$sequence, $letter"
+            }
+        )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Button(
-                onClick = {},
+                onClick = { sequence = "" },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Cancella")
@@ -71,14 +84,15 @@ fun SimonScreen() {
     }
 }
 
+
 @Composable
-fun ColorGrid() {
+fun ColorGrid(onColorClick: (String) -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ColorRow("Rosso", "Verde", Color.Red, Color.Green)
-        ColorRow("Blu", "Magenta", Color.Blue, Color.Magenta)
-        ColorRow("Giallo", "Ciano", Color.Yellow, Color.Cyan)
+        ColorRow("R", "G", Color.Red, Color.Green, onColorClick)
+        ColorRow("B", "M", Color.Blue, Color.Magenta, onColorClick)
+        ColorRow("Y", "C", Color.Yellow, Color.Cyan, onColorClick)
     }
 }
 
@@ -87,7 +101,8 @@ fun ColorRow(
     leftText: String,
     rightText: String,
     leftColor: Color,
-    rightColor: Color
+    rightColor: Color,
+    onColorClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -99,7 +114,7 @@ fun ColorRow(
                 .weight(1f)
                 .height(80.dp)
                 .background(leftColor)
-                .clickable { }
+                .clickable { onColorClick(leftText) }
         )
 
         Box(
@@ -107,7 +122,7 @@ fun ColorRow(
                 .weight(1f)
                 .height(80.dp)
                 .background(rightColor)
-                .clickable { }
+                .clickable { onColorClick(rightText) }
         )
     }
 }
