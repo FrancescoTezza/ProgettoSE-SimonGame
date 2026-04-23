@@ -1,6 +1,8 @@
 package com.example.progettose_simongame
 
 import android.os.Bundle
+import android.content.res.Configuration
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -33,10 +35,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +76,63 @@ fun SimonScreen(
 
     var sequence by rememberSaveable{ mutableStateOf("") }
 
+    val configuration = LocalConfiguration.current
+    val isLandscape =
+        configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    if (isLandscape) {
+
+        LandscapeLayout(
+            sequence = sequence,
+
+            onColorClick = { letter ->
+                sequence =
+                    if (sequence.isEmpty()) letter
+                    else "$sequence, $letter"
+            },
+
+            onClear = {
+                sequence = ""
+            },
+
+            onEndGame = {
+                games.add(sequence)
+                sequence = ""
+                navController.navigate("history")
+            }
+        )
+
+    } else {
+
+        PortraitLayout(
+            sequence = sequence,
+
+            onColorClick = { letter ->
+                sequence =
+                    if (sequence.isEmpty()) letter
+                    else "$sequence, $letter"
+            },
+
+            onClear = {
+                sequence = ""
+            },
+
+            onEndGame = {
+                games.add(sequence)
+                sequence = ""
+                navController.navigate("history")
+            }
+        )
+    }
+}
+
+@Composable
+fun PortraitLayout(
+    sequence: String,
+    onColorClick: (String) -> Unit,
+    onClear: () -> Unit,
+    onEndGame: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,38 +145,68 @@ fun SimonScreen(
             fontSize = 24.sp
         )
 
-        ColorGrid(
-            onColorClick = {
-                letter -> sequence =
-                if(sequence.isEmpty()) letter
-                else "$sequence, $letter"
-            }
-        )
+        ColorGrid(onColorClick)
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ButtonsRow(onClear, onEndGame)
+    }
+}
+
+@Composable
+fun LandscapeLayout(
+    sequence: String,
+    onColorClick: (String) -> Unit,
+    onClear: () -> Unit,
+    onEndGame: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+
+        Box(modifier = Modifier.weight(1f)) {
+            ColorGrid(onColorClick)
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Button(
-                onClick = { sequence = "" },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(R.string.clear))
-            }
 
-            Button(
-                onClick = {
-                    games.add(sequence)
-                    sequence = ""
-                    navController.navigate("history")
-                },
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(stringResource(R.string.end_game))
-            }
+            Text(
+                text = "${stringResource(R.string.sequence)}: $sequence",
+                fontSize = 24.sp
+            )
+
+            ButtonsRow(onClear, onEndGame)
         }
     }
 }
 
+@Composable
+fun ButtonsRow(
+    onClear: () -> Unit,
+    onEndGame: () -> Unit
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Button(
+            onClick = onClear,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(stringResource(R.string.clear))
+        }
+
+        Button(
+            onClick = onEndGame,
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(stringResource(R.string.end_game))
+        }
+    }
+}
 
 @Composable
 fun ColorGrid(onColorClick: (String) -> Unit) {
@@ -216,10 +305,31 @@ fun HistoryScreen(
 @Preview(showBackground = true)
 @Composable
 fun SimonScreenPreview() {
+
     ProgettoSESimonGameTheme {
-        Text("Preview temporanea")
+        SimonScreen(
+            navController = rememberNavController(),
+            games = remember { mutableStateListOf<String>() }
+        )
     }
 }
+
+@Preview(
+    showBackground = true,
+    widthDp = 900,
+    heightDp = 400
+)
+@Composable
+fun SimonScreenLandscapePreview() {
+
+    ProgettoSESimonGameTheme {
+        SimonScreen(
+            navController = rememberNavController(),
+            games = remember { mutableStateListOf<String>() }
+        )
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable
