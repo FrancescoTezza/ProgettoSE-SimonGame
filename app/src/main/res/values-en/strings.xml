@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimonGame</string>
+    <string name="sequence">Sequence</string>
+    <string name="clear">Clear</string>
+    <string name="end_game">End Game</string>
+    <string name="history_title">Game History</string>
+    <string name="no_games">No saved games</string>
+</resources>

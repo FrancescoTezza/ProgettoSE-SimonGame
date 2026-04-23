@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">ProgettoSE-SimonGame</string>
+    <string name="app_name">SimonGame</string>
+    <string name="sequence">Sequenza</string>
+    <string name="clear">Cancella</string>
+    <string name="end_game">Fine partita</string>
+    <string name="history_title">Storico Partite</string>
+    <string name="no_games">Nessuna partita salvata</string>
 </resources>

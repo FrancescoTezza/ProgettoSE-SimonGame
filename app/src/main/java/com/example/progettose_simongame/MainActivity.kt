@@ -25,9 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.*
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
@@ -76,7 +82,7 @@ fun SimonScreen(
     ) {
 
         Text(
-            text = "Sequenza : $sequence",
+            text = "${stringResource(R.string.sequence)}: $sequence",
             fontSize = 24.sp
         )
 
@@ -95,7 +101,7 @@ fun SimonScreen(
                 onClick = { sequence = "" },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Cancella")
+                Text(stringResource(R.string.clear))
             }
 
             Button(
@@ -106,7 +112,7 @@ fun SimonScreen(
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Fine partita")
+                Text(stringResource(R.string.end_game))
             }
         }
     }
@@ -167,11 +173,43 @@ fun HistoryScreen(
     ) {
 
         Text(
-            text = "Storico Partite",
+            text = stringResource(R.string.history_title),
             fontSize = 24.sp
         )
 
-        Text("Nessuna partita salvata")
+        Spacer(modifier = Modifier.height(16.dp))
+
+        if (games.isEmpty()) {
+            Text(stringResource(R.string.no_games))
+        } else {
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(games) { game ->
+
+                    val count =
+                        if (game.isBlank()) 0
+                        else game.split(",").size
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+
+                        Text(
+                            text = count.toString(),
+                            modifier = Modifier.width(40.dp)
+                        )
+
+                        Text(
+                            text = game,
+                            maxLines = 1,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -180,5 +218,26 @@ fun HistoryScreen(
 fun SimonScreenPreview() {
     ProgettoSESimonGameTheme {
         Text("Preview temporanea")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HistoryScreenPreview() {
+
+    val fakeGames = remember {
+        mutableStateListOf(
+            "R, G, B",
+            "Y, C",
+            "",
+            "R, R, G, Y, M"
+        )
+    }
+
+    ProgettoSESimonGameTheme {
+        HistoryScreen(
+            navController = rememberNavController(),
+            games = fakeGames
+        )
     }
 }
