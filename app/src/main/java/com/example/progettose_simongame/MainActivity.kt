@@ -35,9 +35,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
 import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.draw.clip
 
 
 class MainActivity : ComponentActivity() {
@@ -140,14 +143,19 @@ fun PortraitLayout(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
+    ColorGrid(onColorClick)
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
             text = "${stringResource(R.string.sequence)}: $sequence",
-            fontSize = 24.sp
+            fontSize = 22.sp,
+            modifier = Modifier.padding(16.dp)
         )
+    }
 
-        ColorGrid(onColorClick)
-
-        ButtonsRow(onClear, onEndGame)
+    ButtonsRow(onClear, onEndGame)
     }
 }
 
@@ -174,10 +182,15 @@ fun LandscapeLayout(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            Text(
-                text = "${stringResource(R.string.sequence)}: $sequence",
-                fontSize = 24.sp
-            )
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = "${stringResource(R.string.sequence)}: $sequence",
+                    fontSize = 22.sp,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
 
             ButtonsRow(onClear, onEndGame)
         }
@@ -190,18 +203,26 @@ fun ButtonsRow(
     onEndGame: () -> Unit
 ) {
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+
         Button(
             onClick = onClear,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .height(54.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
             Text(stringResource(R.string.clear))
         }
 
         Button(
             onClick = onEndGame,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .height(54.dp),
+            shape = RoundedCornerShape(16.dp)
         ) {
             Text(stringResource(R.string.end_game))
         }
@@ -236,6 +257,7 @@ fun ColorRow(
             modifier = Modifier
                 .weight(1f)
                 .height(80.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(leftColor)
                 .clickable { onColorClick(leftText) }
         )
@@ -244,6 +266,7 @@ fun ColorRow(
             modifier = Modifier
                 .weight(1f)
                 .height(80.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(rightColor)
                 .clickable { onColorClick(rightText) }
         )
@@ -258,44 +281,38 @@ fun HistoryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
         Text(
             text = stringResource(R.string.history_title),
-            fontSize = 24.sp
+            fontSize = 26.sp
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         if (games.isEmpty()) {
-            Text(stringResource(R.string.no_games))
+
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = stringResource(R.string.no_games),
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
         } else {
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(games) { game ->
+            games.forEachIndexed { index, game ->
 
-                    val count =
-                        if (game.isBlank()) 0
-                        else game.split(",").size
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-
-                        Text(
-                            text = count.toString(),
-                            modifier = Modifier.width(40.dp)
-                        )
-
-                        Text(
-                            text = game,
-                            maxLines = 1,
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
+                Card(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "${index + 1}. $game",
+                        modifier = Modifier.padding(16.dp),
+                        fontSize = 18.sp
+                    )
                 }
             }
         }
