@@ -51,7 +51,9 @@ class MainActivity : ComponentActivity() {
             ProgettoSESimonGameTheme {
                 val navController = rememberNavController()
 
-                val games = remember { mutableStateListOf<String>() }
+                val games = rememberSaveable {
+                    mutableStateListOf<String>()
+                }
 
                 NavHost(
                     navController = navController,
