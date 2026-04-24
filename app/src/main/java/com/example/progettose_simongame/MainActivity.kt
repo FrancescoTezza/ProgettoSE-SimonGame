@@ -31,10 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.*
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
@@ -42,7 +38,7 @@ import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 
-
+// Punto di ingresso dell'app e gestione navigazione tra schermate
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,13 +54,13 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
                     startDestination = "game"
-                ) {
+                )  {
                     composable("game") {
                         SimonScreen(navController, games)
                     }
 
                     composable("history") {
-                        HistoryScreen(navController, games)
+                        HistoryScreen(games = games)
                     }
                 }
             }
@@ -72,7 +68,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
+// Schermata 1 del gioco
 @Composable
 fun SimonScreen(
     navController: NavHostController,
@@ -131,6 +127,7 @@ fun SimonScreen(
     }
 }
 
+// Layout verticale usato in orientamento portrait
 @Composable
 fun PortraitLayout(
     sequence: String,
@@ -161,6 +158,7 @@ fun PortraitLayout(
     }
 }
 
+// Layout orizzontale usato in orientamento landscape
 @Composable
 fun LandscapeLayout(
     sequence: String,
@@ -199,6 +197,7 @@ fun LandscapeLayout(
     }
 }
 
+// Pulsanti di controllo: "Cancella" e "Fine partita"
 @Composable
 fun ButtonsRow(
     onClear: () -> Unit,
@@ -231,6 +230,7 @@ fun ButtonsRow(
     }
 }
 
+// Griglia 3x2 dei pulsanti colorati
 @Composable
 fun ColorGrid(onColorClick: (String) -> Unit) {
     Column(
@@ -242,6 +242,7 @@ fun ColorGrid(onColorClick: (String) -> Unit) {
     }
 }
 
+//classe utilizzata in Color Grid per creare la matrice di colori
 @Composable
 fun ColorRow(
     leftText: String,
@@ -275,9 +276,9 @@ fun ColorRow(
     }
 }
 
+//Schermata 2 del gioco
 @Composable
 fun HistoryScreen(
-    navController: NavHostController,
     games: SnapshotStateList<String>
 ) {
     Column(
@@ -365,7 +366,6 @@ fun HistoryScreenPreview() {
 
     ProgettoSESimonGameTheme {
         HistoryScreen(
-            navController = rememberNavController(),
             games = fakeGames
         )
     }
