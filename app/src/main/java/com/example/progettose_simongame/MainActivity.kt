@@ -37,6 +37,7 @@ import androidx.navigation.NavHostController
 import com.example.progettose_simongame.ui.theme.ProgettoSESimonGameTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 
 // Punto di ingresso dell'app e gestione navigazione tra schermate
 class MainActivity : ComponentActivity() {
@@ -311,17 +312,43 @@ fun HistoryScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = "${index + 1}. $game",
-                        modifier = Modifier.padding(16.dp),
-                        fontSize = 18.sp
-                    )
+                    games.forEach { game ->
+
+                        val count =
+                            if (game.isBlank()) 0
+                            else game.split(",").size
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+
+                                Text(
+                                    text = count.toString(),
+                                    fontSize = 18.sp
+                                )
+
+                                Text(
+                                    text = game,
+                                    fontSize = 18.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis //necessaria per il troncamento
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun SimonScreenPreview() {
@@ -370,3 +397,4 @@ fun HistoryScreenPreview() {
         )
     }
 }
+*/
