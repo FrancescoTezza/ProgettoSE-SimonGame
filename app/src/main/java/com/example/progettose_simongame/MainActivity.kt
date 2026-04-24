@@ -318,11 +318,6 @@ fun HistoryScreen(
                         .padding(16.dp)
                 ) {
 
-                    Text(
-                        text = stringResource(R.string.history_title),
-                        fontSize = 26.sp
-                    )
-
                     Spacer(modifier = Modifier.height(12.dp))
 
                     LazyColumn(
